@@ -45,6 +45,15 @@ Place the dataset CSV at:
 
 If your file uses different column names for the targets, you can pass them explicitly (see below).
 
+## Additional dataset: Screen Time (Productivity + Attention Span)
+
+This repository also includes a second dataset (`data.csv`) containing survey responses about screen time, productivity, and attention span. You can run the same pipeline on this dataset by directly specifying the target column.
+
+- **Dataset file**: `project/data.csv`
+- **Targets available**:
+  - `Productivity`
+  - `Attention Span`
+
 ## Setup (Linux / macOS)
 
 ```bash
@@ -87,6 +96,22 @@ or
 python3 train.py \
   --data data/raw/time_wasters_on_social_media.csv \
   --target-col "Productivity Loss"
+```
+
+### Screen Time dataset: predict Productivity
+
+```bash
+python3 train.py \
+  --data data.csv \
+  --target-col "Productivity"
+```
+
+### Screen Time dataset: predict Attention Span
+
+```bash
+python3 train.py \
+  --data data.csv \
+  --target-col "Attention Span"
 ```
 
 ## Outputs
