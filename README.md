@@ -1,0 +1,104 @@
+# Social Media Risk Prediction (EECS 486)
+
+This project implements the approach described in `21_Social_Medias_Impact_on_Men.pdf`: a supervised learning pipeline that predicts either **Addiction Level** or **Productivity Loss** from structured social media engagement and demographic features.
+
+## What it does
+
+Given a CSV dataset, the pipeline:
+
+1. Cleans and splits the data into train/test sets.
+2. Imputes missing values (median for numeric, most-frequent for categorical).
+3. One-hot encodes categorical columns.
+4. Trains and compares:
+   - Logistic Regression (interpretable baseline)
+   - Random Forest
+   - Gradient Boosting
+5. Selects the best model via cross-validation (macro F1).
+6. Evaluates on the held-out test set (accuracy, macro F1, classification report, confusion matrix).
+7. Produces basic interpretability:
+   - Logistic Regression: top positive/negative coefficients (binary) or top per-class weights (multiclass).
+   - Tree models: top feature importances.
+
+## Project layout
+
+```
+project/
+  README.md
+  requirements.txt
+  data/
+    raw/          # put the raw Kaggle CSV here
+    annotated/    # optional: any derived/cleaned labeled data you create
+  artifacts/      # trained models, metrics, plots (created by scripts)
+  src/
+    social_media_risk/
+      ...
+  train.py        # main entrypoint
+```
+
+## Dataset
+
+The writeup references the Kaggle dataset “Time-Wasters on Social Media”.
+
+Place the dataset CSV at:
+
+`project/data/raw/time_wasters_on_social_media.csv`
+
+If your file uses different column names for the targets, you can pass them explicitly (see below).
+
+## Setup (Linux / macOS)
+
+```bash
+cd project
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pip install -e .
+```
+
+## Train and evaluate
+
+### Predict Addiction Level
+
+```bash
+python3 train.py \
+  --data data/raw/time_wasters_on_social_media.csv \
+  --target addiction_level
+```
+
+### Predict Productivity Loss
+
+```bash
+python3 train.py \
+  --data data/raw/time_wasters_on_social_media.csv \
+  --target productivity_loss
+```
+
+### If your target columns have different names
+
+```bash
+python3 train.py \
+  --data data/raw/time_wasters_on_social_media.csv \
+  --target-col "Addiction Level"
+```
+
+or
+
+```bash
+python3 train.py \
+  --data data/raw/time_wasters_on_social_media.csv \
+  --target-col "Productivity Loss"
+```
+
+## Outputs
+
+Runs write outputs to `project/artifacts/<run_id>/`:
+
+- `best_model.joblib`: trained model pipeline (preprocessing + classifier)
+- `metrics.json`: evaluation metrics on the test set
+- `confusion_matrix.png`: confusion matrix heatmap
+- `top_features.txt`: human-readable interpretability summary
+
+## Notes on responsible use
+
+This is not a diagnostic tool. It predicts risk indicators **within the scope of the dataset labels** and should be treated as an early-warning / awareness aid.
+
